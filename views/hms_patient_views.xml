@@ -16,6 +16,9 @@
         <field name="model">hms.patient</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="undetermined,good,fair,serious" nolabel="1" options="{'clickable' : '1'}"/>
+                </header>
                 <group>
                     <group string="Personal Info">
                         <field name="first_name"/>

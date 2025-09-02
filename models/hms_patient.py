@@ -6,6 +6,13 @@ BLOOD_TYPES = [
     ('b','B'),
     ('o','O')
 ]
+
+STATUS = [
+    ('undetermined','Undetermined'),
+    ('good','Good'),
+    ('fair','Fair'),
+    ('serious','Serious')
+]
 class HmsPatient(models.Model):
     _name = "hms.patient"
 
@@ -19,6 +26,7 @@ class HmsPatient(models.Model):
     image = fields.Binary()
     address = fields.Text()
     age = fields.Integer()
+    state=fields.Selection(STATUS, default='undetermined')
     department_id=fields.Many2one(comodel_name="hms.department")
     department_capacity=fields.Integer(related="department_id.capacity")
     doctor_id=fields.Many2one(comodel_name="hms.doctor")
