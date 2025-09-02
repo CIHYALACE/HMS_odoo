@@ -1,4 +1,4 @@
-from odoo import models,fields
+from odoo import models,fields,api
 
 BLOOD_TYPES = [
     ('ab','AB'),
@@ -13,6 +13,14 @@ STATUS = [
     ('fair','Fair'),
     ('serious','Serious')
 ]
+
+class HmsPatientStateLog(models.Model):
+    _name = "hms.patient.state.log"
+
+    patient_id=fields.Many2one(comodel_name="hms.patient")
+    description=fields.Text()
+
+
 class HmsPatient(models.Model):
     _name = "hms.patient"
 
@@ -29,4 +37,13 @@ class HmsPatient(models.Model):
     state=fields.Selection(STATUS, default='undetermined')
     department_id=fields.Many2one(comodel_name="hms.department")
     department_capacity=fields.Integer(related="department_id.capacity")
-    doctor_id=fields.Many2one(comodel_name="hms.doctor")
+    doctor_id=fields.Many2many(comodel_name="hms.doctor")
+
+    api.onchange('state')
+    def state_change(self):
+        for rec in self:
+            vars={
+                'description': 'State Changed to %s'%(rec.state),
+                'patient_id' : rec.id
+            }
+            self.env['hms.patient.state.log'].create(vars)
